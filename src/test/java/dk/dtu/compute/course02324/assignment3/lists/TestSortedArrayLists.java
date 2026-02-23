@@ -70,7 +70,7 @@ public class TestSortedArrayLists extends TestForAllLists{
 
     @Test
     public void testClearAndIsEmptySorted() {
-        // impl: simple test for clear() and isEmpty() on sorted list
+        // simple test for clear() and isEmpty() on sorted list
         list.add("alpha");
         list.add("beta");
 
@@ -84,7 +84,7 @@ public class TestSortedArrayLists extends TestForAllLists{
 
     @Test
     public void testSetAndAddAtIndexThrowOnSorted() {
-        // impl: set(i, e) and add(i, e) are not allowed on sorted lists
+        // set(i, e) and add(i, e) are not allowed on sorted lists
         list.add("alpha");
 
         Assert.assertThrows(

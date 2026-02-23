@@ -19,57 +19,65 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * impl: gui for viewing and editing a list of persons (add, delete, sort, weight, index etc.).
+ * A GUI element that is allows the user to interact and
+ * change a list of persons.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  */
 public class PersonsGUI extends GridPane {
 
-    /** impl: backing list of persons that the gui shows and edits. */
     final private List<Person> persons;
 
     private GridPane personsPane;
 
-    // impl: labels showing average weight and most frequent name (updated in update)
+    // labels showing average weight and most frequent name
     private Label averageWeightLabel;
     private Label mostFrequentNameLabel;
 
-    // impl: label for showing error messages from button actions
+    // label for showing error messages from button actions
     private Label errorLabel;
 
     /**
-     * impl: construct the gui and attach it to the given person list.
+     * Constructor which sets up the GUI attached a list of persons.
      *
-     * @param persons list to show and edit (must not be null)
+     * @param persons the list of persons which is to be maintained in
+     *                this GUI component; it must not be <code>null</code>
      */
     public PersonsGUI(@NotNull List<Person> persons) {
         this.persons = persons;
 
+        
         this.setVgap(5.0);
+        
         this.setHgap(5.0);
 
-        // impl: text field for person name
+        // text field for person name
+        
         TextField field = new TextField();
         
         field.setPrefColumnCount(5);
         
         field.setText("name");
 
-        // impl: text field for numeric weight
+        // text field for numeric weight
         TextField weightField = new TextField();
         
+
         weightField.setPrefColumnCount(5);
         
         weightField.setText("70");
         
         weightField.setPromptText("weight (number)");
 
-        // impl: label that will show the last error message
+        // label that will show the last error message
+        
         errorLabel = new Label("");
+        
+        
         errorLabel.setWrapText(true);
 
 
-        // impl: button to add a person (name + weight), catching exceptions
+        // button to add a person (name + weight), catching exceptions
         Button addButton = new Button("add");
 
         addButton.setOnAction(
@@ -79,7 +87,10 @@ public class PersonsGUI extends GridPane {
                     try {
                         double weight = parseWeight(weightField.getText());
 
+
+
                         String name = field.getText();
+
 
                         if (name == null || name.isBlank()) {
                             showError("enter a name.");
@@ -97,13 +108,14 @@ public class PersonsGUI extends GridPane {
                 });
 
 
-        // impl: text field and button for adding a person at a given index
+        // text field and button for adding a person at a given index
         TextField indexField = new TextField();
         indexField.setPrefColumnCount(4);
 
         indexField.setPromptText("index");
 
         Button addAtIndexButton = new Button("add at index:");
+
         addAtIndexButton.setOnAction(
 
                 e -> {
@@ -112,7 +124,9 @@ public class PersonsGUI extends GridPane {
                     try {
                         int index = Integer.parseInt(indexField.getText().trim());
 
+
                         double weight = parseWeight(weightField.getText());
+
                         String name = field.getText();
 
                         if (name == null || name.isBlank()) {
@@ -143,8 +157,12 @@ public class PersonsGUI extends GridPane {
         Comparator<Person> comparator = new GenericComparator<>();
 
 
-        // impl: sort button, catches unsupported operation on sorted lists
+        // sort button, catches unsupported operation on sorted lists
+
         Button sortButton = new Button("sort");
+
+
+
         sortButton.setOnAction(
                 e -> {
 
@@ -167,8 +185,9 @@ public class PersonsGUI extends GridPane {
                 });
 
 
-        // impl: button to clear the whole list
+        // button to clear the whole list
         Button clearButton = new Button("clear");
+
 
         clearButton.setOnAction(
 
@@ -180,13 +199,13 @@ public class PersonsGUI extends GridPane {
                     update();
                 });
 
-        // impl: labels for average weight and most frequent name statistics
+        // labels for average weight and most frequent name statistics
         averageWeightLabel = new Label("average weight: -");
 
         mostFrequentNameLabel = new Label("most frequent name: -");
 
 
-        // impl: left column with input fields, buttons and labels
+        // left column with input fields, buttons and labels
         VBox actionBox = new VBox(
 
                 field,
@@ -197,19 +216,23 @@ public class PersonsGUI extends GridPane {
                 indexField,
                 addAtIndexButton,
 
+
                 sortButton,
+
                 clearButton,
 
                 averageWeightLabel,
+
                 mostFrequentNameLabel,
 
                 errorLabel
         );
         actionBox.setSpacing(5.0);
+
         this.add(actionBox, 0, 0);
 
 
-        // impl: right column with a scrollable list of persons
+        // right column with a scrollable list of persons
         Label labelPersonsList = new Label("persons:");
 
 
@@ -220,11 +243,14 @@ public class PersonsGUI extends GridPane {
 
         personsPane.setHgap(5);
 
+
         personsPane.setVgap(5);
 
         ScrollPane scrollPane = new ScrollPane(personsPane);
 
+
         scrollPane.setMinWidth(300);
+
         scrollPane.setMaxWidth(300);
 
         scrollPane.setMinHeight(300);
@@ -236,7 +262,7 @@ public class PersonsGUI extends GridPane {
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
 
-        // impl: add the scrollable list to the grid pane (column 1)
+        // add the scrollable list to the grid pane (column 1)
         VBox personsList = new VBox(labelPersonsList, scrollPane);
 
         personsList.setSpacing(5.0);
@@ -244,17 +270,17 @@ public class PersonsGUI extends GridPane {
         this.add(personsList, 1, 0);
 
 
-        // impl: initial update of the gui from the current list
+        // initial update of the gui from the current list
         update();
     }
 
     /**
-     * impl: update all gui elements from the current list values,
+     * update all gui elements from the current list values,
      * including average weight and most frequent name.
      */
     private void update() {
 
-        // impl: clear all existing person entries and rebuild them from the list
+        // clear all existing person entries and rebuild them from the list
         personsPane.getChildren().clear();
         for (int i = 0; i < persons.size(); i++) {
 
@@ -283,7 +309,7 @@ public class PersonsGUI extends GridPane {
 
 
 
-        // impl: update average weight label
+        // update average weight label
         if (persons.isEmpty()) {
 
             averageWeightLabel.setText("average weight: -");
@@ -302,7 +328,7 @@ public class PersonsGUI extends GridPane {
         }
 
 
-        // impl: update most frequent name label using a map of name -> count
+        // update most frequent name label using a map of name -> count
         if (persons.isEmpty()) {
 
             mostFrequentNameLabel.setText("most frequent name: -");
@@ -337,7 +363,7 @@ public class PersonsGUI extends GridPane {
 
 
     /**
-     * impl: parse weight from text. if empty, return default 70.0.
+     * parse weight from text. if empty, return default 70.0.
      * throws an exception if the parsed weight is not a positive number.
      */
     private double parseWeight(String text) {
@@ -359,12 +385,12 @@ public class PersonsGUI extends GridPane {
         return w;
     }
 
-    // impl: show last error message in the error label
+    // show last error message in the error label
     private void showError(String message) {
         errorLabel.setText("error: " + message);
     }
 
-    // impl: clear any previous error message from the gui
+    // clear any previous error message from the gui
     private void clearError() {
         errorLabel.setText("");
     }

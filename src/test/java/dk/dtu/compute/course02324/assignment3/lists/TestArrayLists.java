@@ -72,7 +72,7 @@ public class TestArrayLists extends TestForAllLists{
 
     @Test
     public void testClearAndIsEmpty() {
-        // impl: simple test for clear() and isEmpty()
+        // simple test for clear() and isEmpty()
         list.add("alpha");
         list.add("beta");
 
@@ -86,7 +86,7 @@ public class TestArrayLists extends TestForAllLists{
 
     @Test
     public void testSetAndAddAtIndex() {
-        // impl: simple test for add(index, e) and set(index, e)
+        // simple test for add(index, e) and set(index, e)
         list.add("alpha");
         list.add("gamma");
 
