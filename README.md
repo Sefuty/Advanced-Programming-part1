@@ -38,4 +38,8 @@ Also fixed the Person class:
 you can try all the buttons - they should work
 
 Tests pass too along with the extra ones
-Thats pretty much it! we hope everything works as expected.
+
+We added some comments to the code to make it easier to understand and to make everything clear and more readable
+
+Thats pretty much it we hope everything works as expected
+
