@@ -70,7 +70,34 @@ public class TestArrayLists extends TestForAllLists{
                 list.size());
     }
 
-    // TODO: there could be some more tests concerning the methods
-    //       clear(), isEmpty(), set(i, E) and add(i, E)
+    @Test
+    public void testClearAndIsEmpty() {
+        // impl: simple test for clear() and isEmpty()
+        list.add("alpha");
+        list.add("beta");
+
+        Assert.assertFalse("list should not be empty after adding elements", list.isEmpty());
+
+        list.clear();
+
+        Assert.assertTrue("list should be empty after clear()", list.isEmpty());
+        Assert.assertEquals("size should be 0 after clear()", 0, list.size());
+    }
+
+    @Test
+    public void testSetAndAddAtIndex() {
+        // impl: simple test for add(index, e) and set(index, e)
+        list.add("alpha");
+        list.add("gamma");
+
+        // insert in the middle
+        Assert.assertTrue("add at index should return true", list.add(1, "beta"));
+        Assert.assertEquals("element at index 1 should be 'beta'", "beta", list.get(1));
+
+        // replace element at index 1
+        String old = list.set(1, "beta2");
+        Assert.assertEquals("old value from set should be 'beta'", "beta", old);
+        Assert.assertEquals("element at index 1 should now be 'beta2'", "beta2", list.get(1));
+    }
 
 }

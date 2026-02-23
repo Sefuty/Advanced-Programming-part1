@@ -19,28 +19,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * GUI til at vise og redigere en liste af personer (tilføj, slet, sorter, vægt, indeks m.m.).
+ * impl: gui for viewing and editing a list of persons (add, delete, sort, weight, index etc.).
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  */
 public class PersonsGUI extends GridPane {
 
-    /** Listen af personer som GUI'en viser og redigerer. */
+    /** impl: backing list of persons that the gui shows and edits. */
     final private List<Person> persons;
 
     private GridPane personsPane;
 
-    // labels der viser gennemsnitsvægt og mest forekommende navn (opdateres i update())
+    // impl: labels showing average weight and most frequent name (updated in update)
     private Label averageWeightLabel;
     private Label mostFrequentNameLabel;
 
-    // label til fejlbeskeder fra knapper (valgfri, så brugeren ser undtagelser)
+    // impl: label for showing error messages from button actions
     private Label errorLabel;
 
     /**
-     * Opretter GUI'en og kobler den til den givne personliste.
+     * impl: construct the gui and attach it to the given person list.
      *
-     * @param persons listen der skal vises og redigeres (må ikke være null)
+     * @param persons list to show and edit (must not be null)
      */
     public PersonsGUI(@NotNull List<Person> persons) {
         this.persons = persons;
@@ -48,212 +48,323 @@ public class PersonsGUI extends GridPane {
         this.setVgap(5.0);
         this.setHgap(5.0);
 
-        // tekstfelt til navn
+        // impl: text field for person name
         TextField field = new TextField();
+        
         field.setPrefColumnCount(5);
+        
         field.setText("name");
 
-        // tekstfelt til vægt (numerisk)
+        // impl: text field for numeric weight
         TextField weightField = new TextField();
+        
         weightField.setPrefColumnCount(5);
+        
         weightField.setText("70");
-        weightField.setPromptText("vægt (tal)");
+        
+        weightField.setPromptText("weight (number)");
 
-        // label til fejlbeskeder
+        // impl: label that will show the last error message
         errorLabel = new Label("");
         errorLabel.setWrapText(true);
 
-        // knap til at tilføje person (navn + vægt). fanger undtagelser
-        Button addButton = new Button("Add");
+
+        // impl: button to add a person (name + weight), catching exceptions
+        Button addButton = new Button("add");
+
         addButton.setOnAction(
                 e -> {
                     clearError();
+
                     try {
                         double weight = parseWeight(weightField.getText());
+
                         String name = field.getText();
+
                         if (name == null || name.isBlank()) {
-                            showError("Angiv et navn.");
+                            showError("enter a name.");
                             return;
+
                         }
                         Person person = new Person(name.trim(), weight);
                         persons.add(person);
                         update();
+
                     } catch (Exception ex) {
+
                         showError(ex.getMessage());
                     }
                 });
 
-        // tekstfelt til indeks og knap "Add at index:"
+
+        // impl: text field and button for adding a person at a given index
         TextField indexField = new TextField();
         indexField.setPrefColumnCount(4);
-        indexField.setPromptText("indeks");
-        Button addAtIndexButton = new Button("Add at index:");
+
+        indexField.setPromptText("index");
+
+        Button addAtIndexButton = new Button("add at index:");
         addAtIndexButton.setOnAction(
+
                 e -> {
                     clearError();
+
                     try {
                         int index = Integer.parseInt(indexField.getText().trim());
+
                         double weight = parseWeight(weightField.getText());
                         String name = field.getText();
+
                         if (name == null || name.isBlank()) {
-                            showError("Angiv et navn.");
+
+                            showError("enter a name.");
+
                             return;
+
                         }
+
                         Person person = new Person(name.trim(), weight);
+
                         persons.add(index, person);
+
                         update();
                     } catch (NumberFormatException ex) {
-                        showError("Ugyldigt indeks eller vægt. Brug hele tal for indeks.");
+
+                        showError("invalid index or weight. use whole numbers for index.");
+
                     } catch (Exception ex) {
+
                         showError(ex.getMessage());
+
                     }
+
                 });
 
         Comparator<Person> comparator = new GenericComparator<>();
 
-        // knap til sortering. fanger UnsupportedOperationException for SortedList
-        Button sortButton = new Button("Sort");
+
+        // impl: sort button, catches unsupported operation on sorted lists
+        Button sortButton = new Button("sort");
         sortButton.setOnAction(
                 e -> {
+
                     clearError();
+
                     try {
                         persons.sort(comparator);
+
                         update();
+
                     } catch (UnsupportedOperationException ex) {
-                        showError("Sort er ikke tilladt for sorteret liste.");
+
+                        showError("sort is not allowed for sorted list.");
+
                     } catch (Exception ex) {
+
                         showError(ex.getMessage());
+
                     }
                 });
 
-        // knap til at tømme listen
-        Button clearButton = new Button("Clear");
+
+        // impl: button to clear the whole list
+        Button clearButton = new Button("clear");
+
         clearButton.setOnAction(
+
                 e -> {
                     clearError();
+
                     persons.clear();
+
                     update();
                 });
 
-        // labels til gennemsnitsvægt og mest forekommende navn
-        averageWeightLabel = new Label("Gennemsnitlig vægt: -");
-        mostFrequentNameLabel = new Label("Mest forekommende navn: -");
+        // impl: labels for average weight and most frequent name statistics
+        averageWeightLabel = new Label("average weight: -");
 
-        // venstre kolonne: felter, knapper og labels
+        mostFrequentNameLabel = new Label("most frequent name: -");
+
+
+        // impl: left column with input fields, buttons and labels
         VBox actionBox = new VBox(
+
                 field,
                 weightField,
+
                 addButton,
+
                 indexField,
                 addAtIndexButton,
+
                 sortButton,
                 clearButton,
+
                 averageWeightLabel,
                 mostFrequentNameLabel,
+
                 errorLabel
         );
         actionBox.setSpacing(5.0);
         this.add(actionBox, 0, 0);
 
-        // højre kolonne: scrollbar liste over personer
-        Label labelPersonsList = new Label("Persons:");
+
+        // impl: right column with a scrollable list of persons
+        Label labelPersonsList = new Label("persons:");
+
 
         personsPane = new GridPane();
+
+
         personsPane.setPadding(new Insets(5));
+
         personsPane.setHgap(5);
+
         personsPane.setVgap(5);
 
         ScrollPane scrollPane = new ScrollPane(personsPane);
+
         scrollPane.setMinWidth(300);
         scrollPane.setMaxWidth(300);
+
         scrollPane.setMinHeight(300);
+
         scrollPane.setMaxHeight(300);
+
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
-        // tilføj listen til gridpane (kolonne 1)
+
+        // impl: add the scrollable list to the grid pane (column 1)
         VBox personsList = new VBox(labelPersonsList, scrollPane);
+
         personsList.setSpacing(5.0);
+
         this.add(personsList, 1, 0);
 
-        // første opdatering af gui ud fra listen
+
+        // impl: initial update of the gui from the current list
         update();
     }
 
     /**
-     * Opdaterer GUI-elementerne med værdier fra listen, inkl. gennemsnitsvægt og mest forekommende navn.
+     * impl: update all gui elements from the current list values,
+     * including average weight and most frequent name.
      */
     private void update() {
+
+        // impl: clear all existing person entries and rebuild them from the list
         personsPane.getChildren().clear();
         for (int i = 0; i < persons.size(); i++) {
+
             Person person = persons.get(i);
+
             Label personLabel = new Label(i + ": " + person.toString());
-            Button deleteButton = new Button("Delete");
+
+            Button deleteButton = new Button("delete");
             deleteButton.setOnAction(
+
                     e -> {
+
                         persons.remove(person);
                         update();
+
                     }
             );
+
             HBox entry = new HBox(deleteButton, personLabel);
             entry.setSpacing(5.0);
+
             entry.setAlignment(Pos.BASELINE_LEFT);
             personsPane.add(entry, 0, i);
+
         }
 
-        // opdater gennemsnitsvægt
+
+
+        // impl: update average weight label
         if (persons.isEmpty()) {
-            averageWeightLabel.setText("Gennemsnitlig vægt: -");
+
+            averageWeightLabel.setText("average weight: -");
+
         } else {
+
             double sum = 0;
+
             for (int i = 0; i < persons.size(); i++) {
                 sum += persons.get(i).weight;
+
             }
             double avg = sum / persons.size();
-            averageWeightLabel.setText("Gennemsnitlig vægt: " + String.format("%.2f", avg) + " kg");
+
+            averageWeightLabel.setText("average weight: " + String.format("%.2f", avg) + " kg");
         }
 
-        // opdater mest forekommende navn (via Map som i forelæsning 06)
+
+        // impl: update most frequent name label using a map of name -> count
         if (persons.isEmpty()) {
-            mostFrequentNameLabel.setText("Mest forekommende navn: -");
+
+            mostFrequentNameLabel.setText("most frequent name: -");
         } else {
+
             Map<String, Integer> nameCount = new HashMap<>();
+
             for (int i = 0; i < persons.size(); i++) {
+
                 String name = persons.get(i).name;
                 nameCount.put(name, nameCount.getOrDefault(name, 0) + 1);
+
             }
+
             String bestName = null;
+
             int bestCount = 0;
             for (Map.Entry<String, Integer> entry : nameCount.entrySet()) {
+
                 if (entry.getValue() > bestCount) {
                     bestCount = entry.getValue();
+
                     bestName = entry.getKey();
+
                 }
+
             }
-            mostFrequentNameLabel.setText("Mest forekommende navn: " + bestName + " (" + bestCount + " gange)");
+            mostFrequentNameLabel.setText("most frequent name: " + bestName + " (" + bestCount + " times)");
         }
+
     }
 
+
     /**
-     * Parser vægt fra tekst. Hvis tom eller ugyldig, kastes exception.
-     * Ved tom streng bruges standardværdi 70.0.
+     * impl: parse weight from text. if empty, return default 70.0.
+     * throws an exception if the parsed weight is not a positive number.
      */
     private double parseWeight(String text) {
+
         if (text == null || text.isBlank()) {
+
             return 70.0;
+
         }
+
         String trimmed = text.trim();
         double w = Double.parseDouble(trimmed.replace(',', '.'));
+
         if (w <= 0) {
-            throw new IllegalArgumentException("Vægt skal være større end 0.");
+            throw new IllegalArgumentException("weight must be greater than 0.");
         }
+
+
         return w;
     }
 
+    // impl: show last error message in the error label
     private void showError(String message) {
-        errorLabel.setText("Fejl: " + message);
+        errorLabel.setText("error: " + message);
     }
 
+    // impl: clear any previous error message from the gui
     private void clearError() {
         errorLabel.setText("");
     }

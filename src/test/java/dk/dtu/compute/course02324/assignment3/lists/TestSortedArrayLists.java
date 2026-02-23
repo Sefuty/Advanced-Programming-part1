@@ -68,8 +68,34 @@ public class TestSortedArrayLists extends TestForAllLists{
                 list.size());
     }
 
-    // TODO: there could be some more tests concerning the methods
-    //       clear(), isEmpty(), set(i, E) and add(i, E), some of which
-    //       should throw an UnsupportedOperationException!
+    @Test
+    public void testClearAndIsEmptySorted() {
+        // impl: simple test for clear() and isEmpty() on sorted list
+        list.add("alpha");
+        list.add("beta");
+
+        Assert.assertFalse("sorted list should not be empty after adding elements", list.isEmpty());
+
+        list.clear();
+
+        Assert.assertTrue("sorted list should be empty after clear()", list.isEmpty());
+        Assert.assertEquals("size of sorted list should be 0 after clear()", 0, list.size());
+    }
+
+    @Test
+    public void testSetAndAddAtIndexThrowOnSorted() {
+        // impl: set(i, e) and add(i, e) are not allowed on sorted lists
+        list.add("alpha");
+
+        Assert.assertThrows(
+                "set(i, e) on sorted list should throw UnsupportedOperationException",
+                UnsupportedOperationException.class,
+                () -> { list.set(0, "beta"); });
+
+        Assert.assertThrows(
+                "add(i, e) on sorted list should throw UnsupportedOperationException",
+                UnsupportedOperationException.class,
+                () -> { list.add(0, "beta"); });
+    }
 
 }

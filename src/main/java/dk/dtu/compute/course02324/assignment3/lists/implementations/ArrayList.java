@@ -41,14 +41,15 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public E set(int pos, @NotNull E e) throws IndexOutOfBoundsException {
+        // impl: replace element at given position and return the old element
         if (e == null) {
-            throw new IllegalArgumentException("Element must not be null");
+            throw new IllegalArgumentException("element must not be null");
         }
         if (pos < 0 || pos >= size) {
-            throw new IndexOutOfBoundsException("Index: " + pos + ", Size: " + size);
+            throw new IndexOutOfBoundsException("index: " + pos + ", size: " + size);
         }
-        E old = list[pos]; // gemmer nuværende element på pos
-        list[pos] = e;     // sætter den nye ind
+        E old = list[pos]; // impl: remember element currently stored at this position
+        list[pos] = e;     // impl: store the new element at this position
         return old;
     }
 
@@ -99,18 +100,19 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public E remove(int pos) throws IndexOutOfBoundsException {
+        // impl: remove element at position and close the gap by shifting left
         if (pos < 0 || pos >= size) {
-            throw new IndexOutOfBoundsException("Index: " + pos + ", Size: " + size);
+            throw new IndexOutOfBoundsException("index: " + pos + ", size: " + size);
         }
 
         E removed = list[pos];
 
-        // flyt elementer til venstre (dæk hullet)
+        // impl: shift all elements after pos one step to the left
         for (int i = pos; i < size - 1; i++) {
             list[i] = list[i + 1];
         }
 
-        list[size - 1] = null;
+        list[size - 1] = null; // impl: clear last slot which is now unused
         size--;
 
         return removed;
@@ -147,19 +149,19 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public void sort(@NotNull Comparator<? super E> c) throws UnsupportedOperationException {
+        // impl: delegate sorting to the generic bubble sort helper
         if (c == null) {
-            throw new IllegalArgumentException("Comparator must not be null");
+            throw new IllegalArgumentException("comparator must not be null");
         }
         BubbleSort.sort(c, this);
     }
 
     /**
-     * Opretter et nyt array af type E med given længde.
-     * Generics tillader ikke direkte at oprette E[]; vi bruger (E[]) new Object[længde].
-     * Arrayet bruges kun internt i klassen.
+     * impl: create a new internal array for storing elements.
+     * generics do not allow direct creation of E[], so we use (E[]) new Object[length].
      *
-     * @param length længden af arrayet
-     * @return nyt array af type E med given længde
+     * @param length length of the new array
+     * @return new array of type E with the given length
      */
     private E[] createEmptyArray(int length) {
         return (E[]) new Object[length];

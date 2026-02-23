@@ -19,22 +19,21 @@ public class Person implements Comparable<Person> {
 
     @Override
     public int compareTo(@NotNull Person o) {
+        // impl: compare persons first by name, then by weight if names are equal
         if (o == null) {
-            throw new IllegalArgumentException("Argument of compareTo() must not be null");
+            throw new IllegalArgumentException("argument of compareTo() must not be null");
         }
-        // først sammenlign på navn
         int nameCompare = this.name.compareTo(o.name);
         if (nameCompare != 0) {
             return nameCompare;
         }
-        // hvis navne er ens, sammenlign på vægt
         return Double.compare(this.weight, o.weight);
     }
 
     /**
-     * Giver en simpel strengrepræsentation af personen (navn og vægt).
+     * impl: return a simple string with name and weight.
      *
-     * @return streng på formen "navn, vægtkg"
+     * @return string on the form \"name, weightkg\"
      */
     @Override
     public String toString() {
@@ -42,10 +41,10 @@ public class Person implements Comparable<Person> {
     }
 
     /**
-     * Sammenligner to personer. To personer er lige hvis navn og vægt er ens.
+     * impl: two persons are equal if both name and weight are equal.
      *
-     * @param o det objekt der skal sammenlignes med
-     * @return true hvis navn og vægt er ens, ellers false
+     * @param o object to compare with
+     * @return true if names and weights are equal, otherwise false
      */
     @Override
     public boolean equals(Object o) {
@@ -60,9 +59,9 @@ public class Person implements Comparable<Person> {
     }
 
     /**
-     * HashCode skal være konsistent med equals: lige objekter har samme hashCode.
+     * impl: hash code must be consistent with equals (same name and weight -> same hash).
      *
-     * @return hashCode baseret på navn og vægt
+     * @return hash code based on name and weight
      */
     @Override
     public int hashCode() {

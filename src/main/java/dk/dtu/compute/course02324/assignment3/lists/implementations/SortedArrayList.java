@@ -7,34 +7,49 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Comparator;
 
 /**
- * Implementering af {@link SortedList} baseret på {@link ArrayList}.
- * Listen holdes altid sorteret; add(e) indsætter på rette sted, sort/set/add(pos,e) er ikke tilladt.
+ * impl: sorted list implementation based on {@link ArrayList}.
+ * the list is always kept sorted; add(e) inserts at the right position,
+ * sort/set/add(pos,e) are not allowed.
  *
- * @param <E> elementtypen (skal være Comparable)
+ * @param <E> element type (must be comparable)
  */
 public class SortedArrayList<E extends Comparable<E>> extends ArrayList<E> implements SortedList<E> {
 
     @Override
     public void sort(@NotNull Comparator<? super E> c) throws UnsupportedOperationException {
-        // sortering er ikke tilladt på SortedList – listen er altid sorteret
+        // impl: sorting is not allowed on sorted lists, they stay sorted automatically
         throw new UnsupportedOperationException("Operation sort(Comparator<? super E> c) not allowed on SortedLists");
     }
 
     @Override
+    public E set(int pos, @NotNull E e) throws UnsupportedOperationException {
+        // impl: replacing elements at a fixed position is not allowed on sorted lists
+        throw new UnsupportedOperationException("Operation set(int pos, E e) not allowed on SortedLists");
+    }
+
+    @Override
+    public boolean add(int pos, @NotNull E e) throws UnsupportedOperationException {
+        // impl: adding at an explicit position is not allowed on sorted lists
+        throw new UnsupportedOperationException("Operation add(int pos, E e) not allowed on SortedLists");
+    }
+
+    @Override
     public boolean add(@NotNull E e) {
+        // impl: insert element at the position that keeps the list sorted
         if (e == null) {
-            throw new IllegalArgumentException("Element must not be null");
+            throw new IllegalArgumentException("element must not be null");
         }
         int pos = findIndexToInsert(e);
         return super.add(pos, e);
     }
 
     /**
-     * Finder den position hvor et nyt element skal indsættes så listen forbliver sorteret.
-     * Går lineært gennem listen og stopper ved første element der er større eller lig med e.
+     * impl: find the position where a new element should be inserted
+     * so that the list remains sorted. we scan linearly and stop at
+     * the first element that is greater than or equal to e.
      *
-     * @param e det element der skal indsættes
-     * @return indekset hvor elementet skal indsættes
+     * @param e element to insert
+     * @return index where the element should be inserted
      */
     private int findIndexToInsert(@NotNull E e) {
         for (int i = 0; i < size(); i++) {
