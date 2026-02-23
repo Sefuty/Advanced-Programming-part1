@@ -6,19 +6,19 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Comparator;
 
 /**
- * Implementering af {@link List} med et array der udvides dynamisk ved behov.
+ * impl: list implementation that uses a simple array which grows when needed.
  *
- * @param <E> elementtypen i listen
+ * @param <E> type of the elements stored in the list
  */
 public class ArrayList<E> implements List<E> {
 
-    /** Standard startstørrelse for det interne array (fx 10 som i Java's ArrayList). */
+    /** impl: default initial size for the internal array (for example 10 like java's arraylist). */
     final private int DEFAULT_SIZE = 10;
 
-    /** Antal elementer i listen (logisk størrelse). */
+    /** impl: current number of elements in the list (logical size). */
     private int size = 0;
 
-    /** Array der holder elementerne. */
+    /** impl: internal array that actually stores the elements. */
     private E[] list = createEmptyArray(DEFAULT_SIZE);
 
     @Override
